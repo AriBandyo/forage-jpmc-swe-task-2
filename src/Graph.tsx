@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Table } from '@finos/perspective';
 import { ServerRespond } from './DataStreamer';
 import './Graph.css';
+import { timeStamp } from 'console';
 
 /**
  * Props declaration for <Graph />
@@ -14,7 +15,7 @@ interface IProps {
  * Perspective library adds load to HTMLElement prototype.
  * This interface acts as a wrapper for Typescript compiler.
  */
-interface PerspectiveViewerElement {
+interface PerspectiveViewerElement extends HTMLElement {
   load: (table: Table) => void,
 }
 
@@ -49,6 +50,15 @@ class Graph extends Component<IProps, {}> {
 
       // Add more Perspective configurations here.
       elem.load(this.table);
+      elem.setAttribute('view','y_line');//// Render the data as a line chart along the Y-axis.
+      elem.setAttribute('column-pivots','["stock"]');// Column pivots create columns based on the unique values of the specified field, 'stock'. Each stock will have its own set of columns in the table.
+      elem.setAttribute('row-pivots','["timestamp"]');// Row pivots create rows based on the unique values of the specified field, 'timestamp'.
+      elem.setAttribute('columns', '["top_ask_price", "top_bid_price"]');// Specifies which columns to display.
+      elem.setAttribute('aggregates',`
+        {"stock":"distinct count",
+        "top_ask_price":"avg",
+        "top_bid_price":"avg",
+        "timestamp":"distinct count"}`);
     }
   }
 
